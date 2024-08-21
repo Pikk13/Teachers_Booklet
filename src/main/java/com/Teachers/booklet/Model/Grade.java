@@ -28,9 +28,5 @@ public class Grade {
   @JsonIgnore
   private Student student;
 
-//  @Transient
-//  public String getStudentName() {
-//    return student != null ? student.getName() : null;
-//  }
 
 }

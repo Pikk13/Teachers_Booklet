@@ -30,6 +30,9 @@ public class Student {
     private Double semesterGrade;
     private Double endOfYearGrade;
 
+    @OneToOne(mappedBy = "student")
+    private StudentCard studentCard;
+
 
 
     }
