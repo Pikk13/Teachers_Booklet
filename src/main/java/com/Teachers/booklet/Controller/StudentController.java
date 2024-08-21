@@ -30,4 +30,9 @@ public class StudentController {
     public Double semesterGradeAverage(@PathVariable String name) {
         return studentService.semesterGradeAverage(name);
     }
+
+    @GetMapping("/endYearAverage/{name}")
+    public Double endOfYearGradeAverage(@PathVariable String name) {
+        return studentService.endOfYearGradeAverage(name);
+    }
 }

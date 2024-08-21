@@ -63,5 +63,36 @@ public class StudentService {
         studentRepo.save(student);
         return semesterGrade;
     }
+
+    public Double endOfYearGradeAverage(String name) {
+        // Find the student by studentId
+        Student student = new Student();
+        Optional<Student> optionalStudent = studentRepo.findById(name);
+        if (optionalStudent.isPresent()) {
+            student = optionalStudent.get();
+        } else System.out.println("There is no student in this name!");
+
+        List<Grade> gradeList = new ArrayList<>();
+        gradeList = student.getGradeList();
+        Double endYearGrade = 0.0;
+        int sumGrades = 0;
+        int numOfGrades = 0;
+
+        for (int i = 0; i < gradeList.size(); i++) {
+            LocalDateTime referenceDateEnd = LocalDateTime.of(2025, 6, 25, 0, 0, 0, 507976);
+            LocalDateTime referenceDateStart = LocalDateTime.of(2024, 8, 1, 0, 0, 0, 507976);
+
+            if (gradeList.get(i).getTimeId().isBefore(referenceDateEnd)
+                    && gradeList.get(i).getTimeId().isAfter(referenceDateStart)) {
+                sumGrades += gradeList.get(i).getGrade();
+                numOfGrades++;
+                endYearGrade = sumGrades / (double) numOfGrades;
+            } else System.out.println("There is no grades in the first semester!");
+        }
+
+        student.setEndOfYearGrade(endYearGrade);
+        studentRepo.save(student);
+        return endYearGrade;
+    }
 }
 
