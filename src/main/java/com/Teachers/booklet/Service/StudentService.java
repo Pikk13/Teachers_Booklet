@@ -98,5 +98,10 @@ public class StudentService {
             studentRepo.delete(student);
         } else System.out.println("There is no student in this name!");
     }
-}
+
+    public Optional<Student> searchByName(String name){
+        return studentRepo.findById(name);
+        }
+    }
+
 

@@ -1,21 +1,19 @@
 package com.Teachers.booklet.Controller;
 
 import com.Teachers.booklet.Model.Student;
-import com.Teachers.booklet.Repository.StudentRepository;
 import com.Teachers.booklet.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
 public class StudentController {
     @Autowired
     StudentService studentService;
-    @Autowired
-    StudentRepository studentRepo;
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,5 +39,10 @@ public class StudentController {
     @DeleteMapping("/delete/{name}")
     public void deleteStudentByName(@PathVariable String name){
         studentService.deleteStudentByName(name);
+    }
+
+    @GetMapping("/searchByName/{name}")
+    public Optional<Student> searchByName(@PathVariable String name){
+        return studentService.searchByName(name);
     }
 }

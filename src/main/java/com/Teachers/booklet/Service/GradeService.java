@@ -69,4 +69,34 @@ public class GradeService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deleteGradeByTimeId(String studentName, LocalDateTime timeId) {
+        Optional<Student> optionalStudent = studentRepo.findById(studentName);
+
+        if (optionalStudent.isPresent()) {
+            Student student = optionalStudent.get();
+            List<Grade> gradeList = student.getGradeList();
+
+            Grade gradeToRemove = null;
+            for (Grade grade : gradeList) {
+                if (grade.getTimeId().equals(timeId)) {
+                    gradeToRemove = grade;
+                    break;
+                }
+            }
+            if (gradeToRemove != null) {
+                gradeList.remove(gradeToRemove);
+                gradeRepo.delete(gradeToRemove);
+                studentRepo.save(student);
+
+                studentService.semesterGradeAverage(studentName);
+                studentService.endOfYearGradeAverage(studentName);
+            } else {
+                System.out.println("There is no grade with this timeId!");
+            }
+        } else {
+            System.out.println("There is no student with this name!");
+        }
+    }
 }
