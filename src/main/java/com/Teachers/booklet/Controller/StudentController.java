@@ -1,6 +1,7 @@
 package com.Teachers.booklet.Controller;
 
 import com.Teachers.booklet.Model.Student;
+import com.Teachers.booklet.Repository.StudentRepository;
 import com.Teachers.booklet.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,12 @@ import java.util.List;
 public class StudentController {
     @Autowired
     StudentService studentService;
+    @Autowired
+    StudentRepository studentRepo;
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Student addNewStudent(@RequestBody Student student) {
-        return studentService.addNewStudent(student);
+    public Student addOrUpdateStudent(@RequestBody Student student) { return studentService.addOrUpdateStudent(student);
     }
 
     @GetMapping("/list")
@@ -34,5 +36,10 @@ public class StudentController {
     @GetMapping("/endYearAverage/{name}")
     public Double endOfYearGradeAverage(@PathVariable String name) {
         return studentService.endOfYearGradeAverage(name);
+    }
+
+    @DeleteMapping("/delete/{name}")
+    public void deleteStudentByName(@PathVariable String name){
+        studentService.deleteStudentByName(name);
     }
 }

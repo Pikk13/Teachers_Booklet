@@ -2,13 +2,11 @@ package com.Teachers.booklet.Service;
 
 import com.Teachers.booklet.Model.Grade;
 import com.Teachers.booklet.Model.Student;
-import com.Teachers.booklet.Repository.GradeRepository;
 import com.Teachers.booklet.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +16,9 @@ public class StudentService {
     @Autowired
     StudentRepository studentRepo;
 
-    @Autowired
-    GradeRepository gradeRepo;
-
-    public Student addNewStudent(Student student) {
+    public Student addOrUpdateStudent(Student student) {
+        Optional<Student> optionalStudent = studentRepo.findById(student.getName());
+        optionalStudent.ifPresent(value -> studentRepo.delete(value));
         return studentRepo.save(student);
     }
 
@@ -34,14 +31,13 @@ public class StudentService {
     }
 
     public Double semesterGradeAverage(String name) {
-        // Find the student by studentId
         Student student = new Student();
         Optional<Student> optionalStudent = studentRepo.findById(name);
         if (optionalStudent.isPresent()) {
             student = optionalStudent.get();
         } else System.out.println("There is no student in this name!");
 
-        List<Grade> gradeList = new ArrayList<>();
+        List<Grade> gradeList;
         gradeList = student.getGradeList();
         Double semesterGrade = 0.0;
         int sumGrades = 0;
@@ -65,14 +61,13 @@ public class StudentService {
     }
 
     public Double endOfYearGradeAverage(String name) {
-        // Find the student by studentId
         Student student = new Student();
         Optional<Student> optionalStudent = studentRepo.findById(name);
         if (optionalStudent.isPresent()) {
             student = optionalStudent.get();
         } else System.out.println("There is no student in this name!");
 
-        List<Grade> gradeList = new ArrayList<>();
+        List<Grade> gradeList;
         gradeList = student.getGradeList();
         Double endYearGrade = 0.0;
         int sumGrades = 0;
@@ -93,6 +88,15 @@ public class StudentService {
         student.setEndOfYearGrade(endYearGrade);
         studentRepo.save(student);
         return endYearGrade;
+    }
+
+    public void deleteStudentByName(String name){
+        Student student;
+        Optional<Student> optionalStudent = studentRepo.findById(name);
+        if (optionalStudent.isPresent()) {
+            student = optionalStudent.get();
+            studentRepo.delete(student);
+        } else System.out.println("There is no student in this name!");
     }
 }
 

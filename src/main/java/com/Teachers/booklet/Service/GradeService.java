@@ -24,6 +24,9 @@ public class GradeService {
     @Autowired
     StudentRepository studentRepo;
 
+    @Autowired
+    StudentService studentService;
+
     @Transactional
     public void addGrade(GradeDTO gradeDTO, String name) {
         // Find the student by studentId
@@ -33,20 +36,15 @@ public class GradeService {
             student = optionalStudent.get();
         } else System.out.println("There is no student in this name!");
 
-        // Create a new Grade entity
         Grade grade = new Grade();
         grade.setGrade(gradeDTO.getGrade());
         grade.setGradeType(gradeDTO.getGradeType());
-
-        // Automatically set timeId to the current date and time if it's not provided
         grade.setTimeId(LocalDateTime.now());
 
         grade.setStudent(student);
 
-        // Save the Grade entity
         gradeRepo.save(grade);
 
-        // Optionally, update the student's gradeList
         if (student.getGradeList() != null) {
             student.getGradeList().add(grade);
         } else {
@@ -54,6 +52,10 @@ public class GradeService {
             student.getGradeList().add(grade);
         }
         studentRepo.save(student);
+
+        studentService.semesterGradeAverage(name);
+        studentService.endOfYearGradeAverage(name);
+
     }
 
     public List<GradeDTO> listGradeByStudent(String name) {
