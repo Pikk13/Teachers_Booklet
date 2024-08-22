@@ -13,7 +13,7 @@ public class StudentCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private OptionsPonCas ponasanjeNaCasu;
     @Enumerated(EnumType.STRING)
@@ -31,6 +31,6 @@ public class StudentCard {
     @Lob
     private String komentar;
     @OneToOne
-    @JoinColumn(name = "student_name")  // A 'student_name' az oszlop neve, amely a Student 'name' mezőjére hivatkozik
+    @JoinColumn(name = "student_name", referencedColumnName = "name")  // A 'student_name' az oszlop neve, amely a Student 'name' mezőjére hivatkozik
     private Student student;
 }
