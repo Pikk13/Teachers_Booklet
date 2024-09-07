@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/grade")
@@ -18,8 +20,11 @@ public class GradeController {
     GradeService gradeService;
 
     @PostMapping("/add/{name}")
-    public void addGrade(@RequestBody GradeDTO gradeDTO, @PathVariable String name) {
+    public ResponseEntity<Map<String,String>> addGrade(@RequestBody GradeDTO gradeDTO, @PathVariable String name) {
         gradeService.addGrade(gradeDTO, name);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Grade added successfully!");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/gradeList/{name}")

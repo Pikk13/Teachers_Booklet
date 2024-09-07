@@ -42,7 +42,7 @@ public class StudentController {
     }
 
     @GetMapping("/searchByName/{name}")
-    public Optional<Student> searchByName(@PathVariable String name){
+    public Student searchByName(@PathVariable String name){
         return studentService.searchByName(name);
     }
 }

@@ -1,5 +1,6 @@
 package com.Teachers.booklet.Service;
 
+import com.Teachers.booklet.Exception.StudentNotFoundException;
 import com.Teachers.booklet.Model.Grade;
 import com.Teachers.booklet.Model.Student;
 import com.Teachers.booklet.Repository.StudentRepository;
@@ -16,6 +17,10 @@ public class StudentService {
     @Autowired
     StudentRepository studentRepo;
 
+    public Student findStudentByName(String name){
+        return studentRepo.findById(name).orElseThrow(()->new StudentNotFoundException("Student not found with this name: " + name));
+    }
+
     public Student addOrUpdateStudent(Student student) {
         Optional<Student> optionalStudent = studentRepo.findById(student.getName());
         optionalStudent.ifPresent(value -> studentRepo.delete(value));
@@ -25,17 +30,18 @@ public class StudentService {
     public List<Student> studentList() {
         List<Student> students = studentRepo.findAll();
         if (students.isEmpty()) {
-            System.out.println("Nincs adatbázisba felvett diák");
+            System.out.println("There is no student in database");
         }
         return students;
     }
 
     public Double semesterGradeAverage(String name) {
-        Student student = new Student();
-        Optional<Student> optionalStudent = studentRepo.findById(name);
-        if (optionalStudent.isPresent()) {
-            student = optionalStudent.get();
-        } else System.out.println("There is no student in this name!");
+        Student student = findStudentByName(name);
+//                new Student();
+//        Optional<Student> optionalStudent = studentRepo.findById(name);
+//        if (optionalStudent.isPresent()) {
+//            student = optionalStudent.get();
+//        } else System.out.println("There is no student in this name!");
 
         List<Grade> gradeList;
         gradeList = student.getGradeList();
@@ -61,11 +67,12 @@ public class StudentService {
     }
 
     public Double endOfYearGradeAverage(String name) {
-        Student student = new Student();
-        Optional<Student> optionalStudent = studentRepo.findById(name);
-        if (optionalStudent.isPresent()) {
-            student = optionalStudent.get();
-        } else System.out.println("There is no student in this name!");
+        Student student = findStudentByName(name);
+//                new Student();
+//        Optional<Student> optionalStudent = studentRepo.findById(name);
+//        if (optionalStudent.isPresent()) {
+//            student = optionalStudent.get();
+//        } else System.out.println("There is no student in this name!");
 
         List<Grade> gradeList;
         gradeList = student.getGradeList();
@@ -91,16 +98,17 @@ public class StudentService {
     }
 
     public void deleteStudentByName(String name){
-        Student student;
-        Optional<Student> optionalStudent = studentRepo.findById(name);
-        if (optionalStudent.isPresent()) {
-            student = optionalStudent.get();
+        Student student = findStudentByName(name);
+//                ;
+//        Optional<Student> optionalStudent = studentRepo.findById(name);
+//        if (optionalStudent.isPresent()) {
+//            student = optionalStudent.get();
             studentRepo.delete(student);
-        } else System.out.println("There is no student in this name!");
+//        } else System.out.println("There is no student in this name!");
     }
 
-    public Optional<Student> searchByName(String name){
-        return studentRepo.findById(name);
+    public Student searchByName(String name){
+        return findStudentByName(name);
         }
     }
 
