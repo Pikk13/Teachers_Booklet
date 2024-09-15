@@ -36,13 +36,15 @@ public class GradeService {
             student = optionalStudent.get();
         } else System.out.println("There is no student in this name!");
 
+        if (gradeDTO.getGrade() < 1 || gradeDTO.getGrade() > 5) {
+            throw new IllegalArgumentException("The grade must be given between 1 and 5!");
+        }
         Grade grade = new Grade();
         grade.setGrade(gradeDTO.getGrade());
         grade.setGradeType(gradeDTO.getGradeType());
         grade.setTimeId(LocalDateTime.now());
 
         grade.setStudent(student);
-
         gradeRepo.save(grade);
 
         if (student.getGradeList() != null) {
