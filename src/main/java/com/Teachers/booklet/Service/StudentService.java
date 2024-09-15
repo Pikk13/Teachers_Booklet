@@ -4,12 +4,14 @@ import com.Teachers.booklet.Exception.StudentNotFoundException;
 import com.Teachers.booklet.Model.Grade;
 import com.Teachers.booklet.Model.Student;
 import com.Teachers.booklet.Repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -18,7 +20,8 @@ public class StudentService {
     StudentRepository studentRepo;
 
     public Student findStudentByName(String name){
-        return studentRepo.findById(name).orElseThrow(()->new StudentNotFoundException("Student not found with this name: " + name));
+        return studentRepo.findById(name).orElseThrow(()->
+                new StudentNotFoundException("Student not found with this name: " + name));
     }
 
     public Student addOrUpdateStudent(Student student) {
@@ -37,11 +40,6 @@ public class StudentService {
 
     public Double semesterGradeAverage(String name) {
         Student student = findStudentByName(name);
-//                new Student();
-//        Optional<Student> optionalStudent = studentRepo.findById(name);
-//        if (optionalStudent.isPresent()) {
-//            student = optionalStudent.get();
-//        } else System.out.println("There is no student in this name!");
 
         List<Grade> gradeList;
         gradeList = student.getGradeList();
@@ -68,11 +66,6 @@ public class StudentService {
 
     public Double endOfYearGradeAverage(String name) {
         Student student = findStudentByName(name);
-//                new Student();
-//        Optional<Student> optionalStudent = studentRepo.findById(name);
-//        if (optionalStudent.isPresent()) {
-//            student = optionalStudent.get();
-//        } else System.out.println("There is no student in this name!");
 
         List<Grade> gradeList;
         gradeList = student.getGradeList();
@@ -99,17 +92,34 @@ public class StudentService {
 
     public void deleteStudentByName(String name){
         Student student = findStudentByName(name);
-//                ;
-//        Optional<Student> optionalStudent = studentRepo.findById(name);
-//        if (optionalStudent.isPresent()) {
-//            student = optionalStudent.get();
+
             studentRepo.delete(student);
-//        } else System.out.println("There is no student in this name!");
     }
 
     public Student searchByName(String name){
         return findStudentByName(name);
         }
+
+    public List<String> findAllClassCategories() {
+        return studentRepo.findAll()
+                .stream()
+                .map(Student::getClassCategory)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+@Transactional
+    public List<String> findStudentNamesByClassCategory(String classCategory) {
+       try {
+           return studentRepo.findByClassCategory(classCategory)
+                   .stream()
+                   .map(Student::getName)
+                   .collect(Collectors.toList());
+       } catch (Exception e) {
+           //log the error
+           e.printStackTrace();
+           throw new RuntimeException("Nem listázza ki a tanulók neveit a 6-B-ből");
+       }
+    }
     }
 
 

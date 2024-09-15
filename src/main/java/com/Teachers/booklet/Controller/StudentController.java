@@ -45,4 +45,14 @@ public class StudentController {
     public Student searchByName(@PathVariable String name){
         return studentService.searchByName(name);
     }
+
+    @GetMapping("/classCategories")
+    public List<String> findAllClassCategories() {
+        return studentService.findAllClassCategories();
+    }
+
+    @GetMapping("/namesByClassCategory/{classCategory}")
+    public List<String> findStudentNamesByClassCategory(@PathVariable String classCategory) {
+        return studentService.findStudentNamesByClassCategory(classCategory);
+    }
 }
